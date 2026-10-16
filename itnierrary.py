@@ -250,11 +250,34 @@ def main():
             if act['image']:
                 print(f"      📷 {act['image']}")
     
-    filename = f"itinerary_{location.replace(' ', '_').replace(',', '')}.json"
+      filename = f"itinerary_{location.replace(' ', '_').replace(',', '')}.json"
     with open(filename, 'w') as f:
         json.dump(plan, f, indent=2)
     print(f"\n💾 Saved to: {filename}")
-    print("\n✨ Open the .json file to see all image links! ✨")
+    
+    # ===== HTML CODE STARTS HERE - paste the HTML block here =====
+    html = f"<html><head><title>Trip to {location}</title></head><body style='font-family:Arial;max-width:800px;margin:auto'>"
+    html += f"<h1>🌍 Trip to {location}</h1>"
+    if plan['destination_image']:
+        html += f"<img src='{plan['destination_image']}' width='100%'>"
+    html += f"<h2>🏨 Hotels</h2><ul>"
+    for h in plan['hotels']:
+        html += f"<li>{h['name']}</li>"
+    html += f"</ul><h2>🍜 Famous Food</h2><p>{plan['famous_food']}</p>"
+    for day in plan['days']:
+        html += f"<h2>Day {day['day']}</h2>"
+        for act in day['activities']:
+            html += f"<h3>{act['time']} - {act['activity']}</h3>"
+            if act['image']:
+                html += f"<img src='{act['image']}' width='300'><br>"
+    html += "</body></html>"
+    
+    html_file = filename.replace('.json', '.html')
+    with open(html_file, 'w') as f:
+        f.write(html)
+    print(f"🌐 Visual version saved: {html_file}")
+    print("   Double-click that file to see photos in your browser!")
+    # ===== HTML CODE ENDS HERE =====
 
 if __name__ == "__main__":
     main()
